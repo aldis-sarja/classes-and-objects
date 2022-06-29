@@ -26,9 +26,8 @@ class Date
     {
         $this->year = $year;
         $this->month = $month;
-        if ($this->checkCorrectDay($day)) {
-            $this->day = $day;
-        }
+        $this->checkCorrectDay($day);
+        $this->day = $day;
     }
 
     public function getYear(): int
@@ -48,6 +47,9 @@ class Date
 
     public function setMonth(int $month): void
     {
+        if ($month < 1 || $month > 12) {
+            throw new Exception("Error! Incorrect month!");
+        }
         $this->month = $month;
     }
 
@@ -56,13 +58,10 @@ class Date
         return $this->day;
     }
 
-    public function setDay(int $day): bool
+    public function setDay(int $day): void
     {
-        if (!$this->checkCorrectDay($day)) {
-            return false;
-        }
+        $this->checkCorrectDay($day);
         $this->day = $day;
-        return true;
     }
 
     public function displayDate(): void
@@ -70,19 +69,21 @@ class Date
         echo "$this->month/$this->day/$this->year\n";
     }
 
-    private function checkCorrectDay(int $day): bool
+    private function checkCorrectDay(int $day): void
     {
+        if ($day < 1 || $day > 31) {
+            throw new Exception("Error! Incorrect day!");
+        }
         if ($this->month === 2) {
             if ($day === 29) {
                 if (!$this->isLeapYear($this->year)) {
-                    return false;
+                    throw new Exception("Error! Short year doesn't have 29 days in February!");
                 }
             }
         }
         if ($this->month % 2 === 0 && $day === 31) {
-            return false;
+            throw new Exception("Error! " . $this->months[$this->month] . " doesn't have 31 days!");
         }
-        return true;
     }
 
     private function isLeapYear(int $year): bool
@@ -98,15 +99,17 @@ class DateTest
 {
     public function run(): void
     {
-        $date1 = new Date(2022, 06, 26);
-        $date1->displayDate();
-        if (!$date1->setDay(31)) {
-            echo "Can't change day to 31 for {$date1->getMonth()}th month!\n";
+        try {
+            $date1 = new Date(2022, 06, 26);
+            $date1->displayDate();
+            $date1->setMonth(02);
+            $date1->setDay(28);
+            $date1->displayDate();
+            $date1->setDay(29);
+            $date1->displayDate();
+        } catch (Exception $exp) {
+            echo $exp->getMessage();
         }
-        $date1->displayDate();
-        $date1->setMonth(02);
-        $date1->setDay(28);
-        $date1->displayDate();
     }
 }
 
