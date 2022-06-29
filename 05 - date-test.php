@@ -35,6 +35,7 @@ class Date
     {
         return $this->year;
     }
+
     public function setYear(int $year): void
     {
         $this->year = $year;
@@ -44,6 +45,7 @@ class Date
     {
         return $this->month;
     }
+
     public function setMonth(int $month): void
     {
         $this->month = $month;
@@ -53,6 +55,7 @@ class Date
     {
         return $this->day;
     }
+
     public function setDay(int $day): bool
     {
         if (!$this->checkCorrectDay($day)) {
@@ -93,10 +96,18 @@ class Date
     }
 }
 
-$date1 = new Date(2022, 06, 26);
-$date1->displayDate();
-$date1->setDay(31);
-$date1->displayDate();
-$date1->setMonth(02);
-$date1->setDay(29);
-$date1->displayDate();
+class DateTest
+{
+    public function run(): void
+    {
+        $date1 = new Date(2022, 06, 26);
+        $date1->displayDate();
+        $date1->setDay(31);
+        $date1->displayDate();
+        $date1->setMonth(02);
+        $date1->setDay(29);
+        $date1->displayDate();
+    }
+}
+
+(new DateTest())->run();

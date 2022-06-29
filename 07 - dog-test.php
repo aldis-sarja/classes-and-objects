@@ -61,32 +61,40 @@ class Dog
 
 }
 
-$max = new Dog('Max', 'male');
-$rocky = new Dog('Rocky', 'male');
-$sparky = new Dog('Sparky', 'male');
-$buster = new Dog('Buster', 'male');
-$sam = new Dog('Sam', 'male');
-$lady = new Dog('Lady', 'female');
-$molly = new Dog('Molly', 'female');
-$coco = new Dog('Coco', 'female');
+class DogTest
+{
+    public function run(): void
+    {
+        $max = new Dog('Max', 'male');
+        $rocky = new Dog('Rocky', 'male');
+        $sparky = new Dog('Sparky', 'male');
+        $buster = new Dog('Buster', 'male');
+        $sam = new Dog('Sam', 'male');
+        $lady = new Dog('Lady', 'female');
+        $molly = new Dog('Molly', 'female');
+        $coco = new Dog('Coco', 'female');
 
-$max->setMother($lady);
-$max->setFather($rocky);
-$coco->setMother($molly);
-$coco->setFather($buster);
-$rocky->setMother($molly);
-$rocky->setFather($sam);
-$buster->setMother($lady);
-$buster->setFather($sparky);
+        $max->setMother($lady);
+        $max->setFather($rocky);
+        $coco->setMother($molly);
+        $coco->setFather($buster);
+        $rocky->setMother($molly);
+        $rocky->setFather($sam);
+        $buster->setMother($lady);
+        $buster->setFather($sparky);
 
-echo "{$buster->getName()} have father - {$buster->fathersName()}\n";
+        echo "{$buster->getName()} have father - {$buster->fathersName()}\n";
 
-if ($coco->hasSameMotherAs($rocky)) {
-    echo "{$coco->getName()} has same mother as {$rocky->getName()}\n";
-}  else  echo "No!\n";
+        if ($coco->hasSameMotherAs($rocky)) {
+            echo "{$coco->getName()} has same mother as {$rocky->getName()}\n";
+        } else  echo "No!\n";
 
-if ($max->hasSameMotherAs($sam)) {
-    echo "{$coco->getName()} has same mother as {$rocky->getName()}\n";
-} else  echo "No!\n";
+        if ($max->hasSameMotherAs($sam)) {
+            echo "{$coco->getName()} has same mother as {$rocky->getName()}\n";
+        } else  echo "No!\n";
 
-var_dump($sam->getFaher());
+        var_dump($sam->getFaher());
+    }
+}
+
+(new DogTest())->run();

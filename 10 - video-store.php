@@ -204,5 +204,41 @@ class Video
 
 }
 
+class VideoStoreTest
+{
+    public function run(): void
+    {
+        $videoStore = new VideoStore();
+        $videoStore->add('The Matrix');
+        $videoStore->add("Godfather II");
+        $videoStore->add("Star Wars Episode IV: A New Hope");
+        $videoStore->rateVideo('The Matrix', 1);
+        $videoStore->rateVideo('The Matrix', 2);
+        $videoStore->rateVideo('The Matrix', 3);
+        $videoStore->rateVideo('Godfather II', 7);
+        $videoStore->rateVideo('Godfather II', 8);
+        $videoStore->rateVideo('Godfather II', 10);
+        $videoStore->rateVideo('Star Wars Episode IV: A New Hope', 7);
+        $videoStore->rateVideo('Star Wars Episode IV: A New Hope', 1);
+        $videoStore->rateVideo('Star Wars Episode IV: A New Hope', 3);
+        $videoStore->checkOut('The Matrix');
+        $videoStore->giveBack('The Matrix');
+        $videoStore->checkOut('Star Wars Episode IV: A New Hope');
+        $videoStore->giveBack('Star Wars Episode IV: A New Hope');
+        $videoStore->checkOut('Godfather II');
+        /**
+         * @var Video $movie
+         */
+        $movies = $videoStore->list(true);
+        foreach($movies as $movie) {
+            echo $movie->getTitle() . " | Rating: " . $movie->getRating() . PHP_EOL;
+        }
+        $videoStore->giveBack('Godfather II');
+    }
+}
+
 $app = new Application();
 $app->run();
+
+
+//(new VideoStoreTest())->run();
