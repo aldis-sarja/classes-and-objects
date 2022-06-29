@@ -13,8 +13,12 @@ class Application
 
     function run()
     {
+        $this->videoStore->add('The Matrix');
+        $this->videoStore->add("Godfather II");
+        $this->videoStore->add("Star Wars Episode IV: A New Hope");
+
         while (true) {
-            echo "========================================\n";
+            echo "===============MENU=====================\n";
             echo "Choose the operation you want to perform \n";
             echo "Choose 0 for EXIT\n";
             echo "Choose 1 to fill video store\n";
@@ -23,22 +27,23 @@ class Application
             echo "Choose 4 to list inventory\n";
 
             $command = (int)readline();
+            echo "========================================\n";
 
             switch ($command) {
                 case 0:
                     echo "Bye!";
                     die;
                 case 1:
-                    $this->add_movies();
+                    $this->addMovies();
                     break;
                 case 2:
-                    $this->rent_video();
+                    $this->rentVideo();
                     break;
                 case 3:
-                    $this->return_video();
+                    $this->returnVideo();
                     break;
                 case 4:
-                    $this->list_inventory();
+                    $this->listInventory(true);
                     break;
                 default:
                     echo "Sorry, I don't understand you..";
@@ -46,7 +51,7 @@ class Application
         }
     }
 
-    private function add_movies()
+    private function addMovies(): void
     {
         while (true) {
             $movie = readline("Enter title or 'q' for quit: ");
@@ -57,44 +62,52 @@ class Application
         }
     }
 
-    private function rent_video()
+    private function rentVideo(): void
     {
+        $this->listInventory(true);
         $movie = readline("Enter title or 'q' for quit: ");
         if ($movie === 'q') {
             return;
         }
-        $what = $this->videoStore->checkOut($movie);
-        if (!$what) {
+
+        if (!$this->videoStore->checkOut($movie)) {
             echo "There is not such movie!\n";
             return;
         }
         echo "Take it and enjoy!\n";
     }
 
-    private function return_video()
+    private function returnVideo(): void
     {
+        $this->listInventory(false);
         $movie = readline("Enter title or 'q' for quit: ");
         if ($movie === 'q') {
             return;
         }
-        $what = $this->videoStore->returnVideo($movie);
-        if (!$what) {
+
+        if (!$this->videoStore->giveBack($movie)) {
             echo "This movie is not from our store!\n";
             return;
         }
+
         $rating = (int)readline("Give us rating for movie (1 - 10): ");
         $this->videoStore->rateVideo($movie, $rating);
         echo "Thanks!\n";
     }
 
-    private function list_inventory()
+    private function listInventory(bool $inStore)
     {
-        $this->videoStore->list();
+        $movies = $this->videoStore->list($inStore);
+        foreach ($movies as $movie) {
+            echo $movie->getTitle() . " | Rating: " . $movie->getRating() . PHP_EOL;
+        }
+        echo PHP_EOL;
     }
 }
 
 class VideoStore
 {
+
     private array $movies = [];
 
     public function add(string $video): void
@@ -113,7 +126,7 @@ class VideoStore
         return null;
     }
 
-    public function returnVideo(string $title): ?Video
+    public function giveBack(string $title): ?Video
     {
         foreach ($this->movies as $video) {
             if ($video->getTitle() === $title) {
@@ -134,18 +147,11 @@ class VideoStore
         }
     }
 
-    public function list(): void
+    public function list(bool $inStore): array
     {
-        foreach ($this->movies as $video) {
-            echo str_repeat('-', strlen($video->getTitle())) . PHP_EOL;
-            echo $video->getTitle() . PHP_EOL;
-            echo "Rating: " . $video->getRating() . PHP_EOL;
-            $isAviable = 'YES';
-            if ($video->getChecked()) {
-                $isAviable = 'NO';
-            }
-            echo "Is aviable: {$isAviable}\n";
-        }
+        return array_filter($this->movies, function ($video) use ($inStore) {
+            return !$video->getChecked() === $inStore;
+        });
     }
 }
 
